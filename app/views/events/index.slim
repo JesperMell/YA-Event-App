@@ -1,0 +1,22 @@
+html
+  head
+  body
+    .container
+      .row
+        .col-6
+          .h3 Events
+          - @events.each do |event|
+            = event.name
+        .col-6
+          .h3 Login
+          = form_with model: User.new, local: true do |f|
+            .field
+              = f.label :email
+              = f.text_field :email
+            .field
+              = f.label :password
+              = f.password_field :password
+            .field
+              = f.label :password_confirmation
+              = f.password_field :password_confirmation
+

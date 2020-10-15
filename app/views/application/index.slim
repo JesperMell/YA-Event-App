@@ -1,0 +1,95 @@
+.container
+  .pricing-header.px-3.py-3.pt-md-5.pb-md-4.mx-auto.text-center
+    h2 YA Trollhättan Coding Events
+    p.lead Here you can join upcoming events in YA school events.
+    hr
+  - if @user&.admin?
+      = form_with model: Event.new, local: true, url: create_event_path do |f|
+        .row
+          .col-lg-4
+              .field
+                = f.label :name
+                = f.text_field :name
+              .field
+                = f.label :description
+                = f.text_area :description
+          .col-lg-4
+              .field
+                = f.label :start_at
+                = f.text_field :start_at
+              .field
+                = f.label :end_at
+                = f.text_field :end_at
+          .col-lg-4
+        .row
+          .col-sm-12
+              .field
+                = f.submit
+  .row
+    .col-8
+      .h3 Events
+      - @events.each do |event|
+        .card
+          .card-body
+            .row
+              .col-sm-12
+                h5.card-title.float-left = event.name
+                p.float-right = event.start_at
+            hr
+            = event.description
+            div
+              br
+              b participants
+              br
+              = event.users.map(&:email).join(", ")
+            hr
+            div
+              - if @user
+                .btn-group
+                  - if event.users.include?(@user)
+                    = link_to "Leave", leave_event_path(event.id), class: 'btn btn-warning'
+                  - else
+                    = link_to "Join", join_event_path(event.id), class: 'btn btn-primary'
+
+                - if @user&.admin?
+                  = link_to "Delete", delete_event_path(event.id), class: 'btn btn-danger'
+                hr
+                  - event.comments.each do |comment|
+                    div.alert.alert-secondary 
+                      .row
+                        .col-sm-12
+                          = comment.content
+                          - if comment.user == @user
+                            = link_to "Delete", delete_comment_path(comment.id), class: 'btn btn-danger btn-sm float-right'
+                  = form_with model: Comment.new, local: true, url: create_comment_path(event.id) do |f|
+                    = f.text_area :content, class: "form-control"
+                    = f.submit "Comment", class: "btn btn-secondary"
+        hr
+    .col-4
+      - if session[:current_user_id]
+        = link_to "Logga ut", logout_path, class: "btn btn-danger btn-block"
+      - else
+        .h4.mb-4 Login
+        = form_with model: Login.new, local: true, url: login_path do |f|
+          .mb-3
+            = f.label :email
+            = f.text_field :email, class: "form-control"
+          .mb-3
+            = f.label :password
+            = f.password_field :password, class: "form-control"
+          .mb-3
+            = f.submit 'Log in', class: 'btn btn-primary btn-block'
+        hr
+        h4.mb-4 Sign up
+        = form_with model: User.new, local: true, url: create_user_path do |f|
+          .mb-3
+            = f.label :email
+            = f.text_field :email, class: "form-control"
+          .mb-3
+            = f.label :password
+            = f.password_field :password, class: "form-control"
+          .field
+            = f.label :password_confirmation
+            = f.password_field :password_confirmation, class: "form-control"
+          .field
+            = f.submit 'Sign up', class: 'btn btn-primary btn-block'
