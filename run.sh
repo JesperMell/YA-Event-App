@@ -16,5 +16,5 @@ docker restart $DOCKER_CONTAINER &&
 	git pull &&
         docker exec -d -w /app $DOCKER_CONTAINER /bin/sh -c 'yarn install --check-files && export APP_DATABASE_PASSWORD=secret &&\n
   RAILS_ENV=production SECRET_KEY_BASE=production_key rake db:migrate assets:precompile &&\n
-  RAILS_ENV=production SECRET_KEY_BASE=production_key rails s -b 0.0.0.0 -p 80
+  RAILS_ENV=production SECRET_KEY_BASE=production_key rails s -b 0.0.0.0 -p 80'
 
